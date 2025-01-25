@@ -1,29 +1,38 @@
 import { Logger, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-import { TransformInterceptor } from "./interceptors/transform.interceptor";
-
 import { AppModule } from "./app.module";
+import { TransformInterceptor } from "./interceptors/transform.interceptor";
 import { SwaggerConfigService } from "./swagger-config/swagger-config.service";
 
 const PORT = process.env.PORT || 3000;
 
 async function bootstrap() {
-  // creating Logger object to log info
+  // Determine the environment to configure logging level
   const logger = new Logger();
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger:
+      process.env.STAGE === "prod"
+        ? ["error", "warn"] // Only show error and warning logs in production
+        : ["log", "warn", "debug", "verbose", "error"], // Show all logs in other environments
+  });
 
   const swaggerService = app.get(SwaggerConfigService); // Inject the SwaggerService
   swaggerService.createDocument(app); // Call the createDocument method
 
-  // enable validation at app level (globally)
+  // Enable validation at app level (globally)
   app.useGlobalPipes(new ValidationPipe());
 
-  // enable interceptor at app level (globally) to
+  // Enable interceptor at app level (globally)
   app.useGlobalInterceptors(new TransformInterceptor());
 
+  // Start the app
   await app.listen(PORT);
 
-  logger.log(`Server running on port ${PORT}`);
+  // Log the server status only if not in production (controlled by environment)
+  if (process.env.STAGE !== "prod") {
+    logger.log(`Server running on port ${PORT}`);
+  }
 }
+
 bootstrap();

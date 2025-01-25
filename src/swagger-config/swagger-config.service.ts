@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { INestApplication, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
@@ -6,11 +6,11 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 export class SwaggerConfigService {
   constructor(private readonly configService: ConfigService) {}
 
-  createDocument(app: any): void {
+  createDocument(app: INestApplication): void {
     const options = new DocumentBuilder()
       .setTitle("Task Management")
       .setDescription(
-        `RESTful API developed using Nest.js for exposing apis to be consumed by frontend.\n Also implemented Swagger for API documentation to execute all APIs using GUI.\n Implemented user authentication and authorization to perform all CRUD operations only for authenticated users.`
+        "RESTful API for managing tasks and users. Built with Nest.js, featuring authentication and authorization. Includes Swagger documentation for testing and integration."
       )
       .setVersion("1.0.0")
       .setContact(
