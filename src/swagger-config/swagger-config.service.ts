@@ -21,7 +21,7 @@ export class SwaggerConfigService {
       .addBearerAuth()
       .addServer("http://localhost:3000", "Development Server")
       .addServer(
-        "https://task-management-api-dev.herokuapp.com",
+        "https://task-management-app-1-eozh.onrender.com/",
         "Production Server"
       )
       .addSecurityRequirements("bearer")

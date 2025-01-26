@@ -26,6 +26,15 @@ async function bootstrap() {
   // Enable interceptor at app level (globally)
   app.useGlobalInterceptors(new TransformInterceptor());
 
+  // enable cors for all servers
+  app.enableCors({
+    origin: "https://task-management-app-1-eozh.onrender.com/",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: "Content-Type, Accept, Authorization",
+    credentials: true,
+    preflightContinue: true,
+  });
+
   // Start the app
   await app.listen(PORT);
 
