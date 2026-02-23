@@ -4,21 +4,21 @@ import {
   InternalServerErrorException,
   Logger,
   UnauthorizedException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
+} from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { InjectRepository } from "@nestjs/typeorm";
+import * as bcrypt from "bcrypt";
+import { Repository } from "typeorm";
 
-import { User } from './users/user.entity';
-import { UsersRepository } from './users/user.repository';
-import { AuthCredentialsDto } from './dto/auth-credentials.dto';
-import { JwtPayload } from './model/jwt-token.model';
+import { AuthCredentialsDto } from "./dto/auth-credentials.dto";
+import { JwtPayload } from "./model/jwt-token.model";
+import { User } from "./users/user.entity";
 
 @Injectable()
 export class AuthService {
   private logger = new Logger();
   constructor(
-    @InjectRepository(User) private usersRepository: UsersRepository,
+    @InjectRepository(User) private usersRepository: Repository<User>,
     private jwtService: JwtService,
   ) {}
 
@@ -33,12 +33,12 @@ export class AuthService {
 
     try {
       await this.usersRepository.save(user);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error);
       // if duplicate user exists, then code 23505 is thrown
-      if (error.code === '23505') {
+      if (error.code === "23505") {
         // throws exception with message to client in response
-        throw new ConflictException('Username already exists');
+        throw new ConflictException("Username already exists");
       } else {
         throw new InternalServerErrorException();
       }
@@ -62,7 +62,7 @@ export class AuthService {
       const accessToken: string = await this.jwtService.sign(payload);
       return { accessToken };
     } else {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException("User not found");
     }
   }
 }

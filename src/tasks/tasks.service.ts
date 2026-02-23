@@ -1,18 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from "@nestjs/common";
 
-import { Status } from './model/task.model';
-import { CreateTaskDto } from './dto/create-task.dto';
-import { GetTaskDto } from './dto/get-task.dto';
-import { TaskRepository } from './repository/task.repository';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Task } from './entity/task.entity';
-import { User } from '../auth/users/user.entity';
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "../auth/users/user.entity";
+import { CreateTaskDto } from "./dto/create-task.dto";
+import { GetTaskDto } from "./dto/get-task.dto";
+import { Task } from "./entity/task.entity";
+import { Status } from "./model/task.model";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class TasksService {
   constructor(
     @InjectRepository(Task)
-    private taskRepository: TaskRepository,
+    private taskRepository: Repository<Task>,
   ) {}
 
   async getAllTasks(getTaskDto: GetTaskDto, user: User): Promise<Task[]> {
@@ -20,7 +20,7 @@ export class TasksService {
     const { status, search } = getTaskDto;
 
     // creating query and passing table name 'tasks'
-    const query = this.taskRepository.createQueryBuilder('tasks');
+    const query = this.taskRepository.createQueryBuilder("tasks");
 
     // find user logged in and if and only if current user is logged in then only get all tasks
     query.where({ user });
@@ -28,14 +28,14 @@ export class TasksService {
     // filtering based on status
     // equivalent SQL statement will be : SELECT * FROM tasks task WHERE task.status = ${status}
     if (status) {
-      query.andWhere('tasks.status = :status', { status });
+      query.andWhere("tasks.status = :status", { status });
     }
 
     // filtering based on search
     // equivalent SQL statement will be : SELECT * FROM tasks task WHERE task.title=${title} OR task.description=${description}
     if (search) {
       query.andWhere(
-        '(LOWER(tasks.title) LIKE LOWER(:search) OR LOWER(tasks.description) LIKE LOWER(:search))',
+        "(LOWER(tasks.title) LIKE LOWER(:search) OR LOWER(tasks.description) LIKE LOWER(:search))",
         { search: `%${search}%` },
       );
     }
@@ -57,7 +57,6 @@ export class TasksService {
   }
 
   async getTaskById(id: string, user: User): Promise<Task> {
-    const isExist1 = await this.taskRepository.findOneBy({ id: id });
     const isExist = await this.taskRepository.findOne({ where: { id, user } });
 
     // if task doesn't exist, throws exception with custom message and status as 404 not found

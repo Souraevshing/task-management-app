@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { validationSchema } from "config.schema";
+import { validationSchema } from "../config.schema";
 import { AuthModule } from "./auth/auth.module";
 import { Swagger } from "./swagger-config/swagger-config.module";
 import { SwaggerConfigService } from "./swagger-config/swagger-config.service";

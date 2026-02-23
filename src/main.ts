@@ -13,8 +13,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger:
       process.env.STAGE === "prod"
-        ? ["error", "warn"] // Only show error and warning logs in production
-        : ["log", "warn", "debug", "verbose", "error"], // Show all logs in other environments
+        ? ["error", "warn", "fatal"] // Only show error and warning logs in production
+        : ["log", "warn", "debug", "verbose", "error", "fatal"], // Show all logs in other environments
   });
 
   const swaggerService = app.get(SwaggerConfigService); // Inject the SwaggerService

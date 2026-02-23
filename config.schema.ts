@@ -1,4 +1,4 @@
-import * as joi from '@hapi/joi';
+import * as joi from "@hapi/joi";
 
 // validate env variables and throw error if any of these properties doesn't exist
 export const validationSchema = joi.object({

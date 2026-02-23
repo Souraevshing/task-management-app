@@ -8,7 +8,6 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { User } from './users/user.entity';
 import { JwtStrategy } from './jwt.strategy';
-import { UsersRepository } from './users/user.repository';
 
 // registering app with passport module setting strategy to use 'jwt'
 // setting the secret for jwt and validity of 3600 seconds
@@ -26,7 +25,7 @@ import { UsersRepository } from './users/user.repository';
       }),
     }),
   ],
-  providers: [AuthService, JwtStrategy, UsersRepository],
+  providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
   exports: [JwtStrategy, PassportModule],
 })

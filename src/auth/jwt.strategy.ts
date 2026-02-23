@@ -1,23 +1,23 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { ConfigService } from '@nestjs/config';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { PassportStrategy } from "@nestjs/passport";
+import { InjectRepository } from "@nestjs/typeorm";
+import { ExtractJwt, Strategy } from "passport-jwt";
 
-import { UsersRepository } from './users/user.repository';
-import { JwtPayload } from './model/jwt-token.model';
-import { User } from './users/user.entity';
+import { Repository } from "typeorm";
+import { JwtPayload } from "./model/jwt-token.model";
+import { User } from "./users/user.entity";
 
 // calling super and passing same secret key as in auth.module.ts and
 // extracting accessToken from header as Bearer token
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    @InjectRepository(User) private usersRepository: UsersRepository,
-    private configService: ConfigService,
+    @InjectRepository(User) private usersRepository: Repository<User>,
+    configService: ConfigService,
   ) {
     super({
-      secretOrKey: configService.getOrThrow('JWT_SECRET'),
+      secretOrKey: configService.getOrThrow("JWT_SECRET"),
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     });
   }
